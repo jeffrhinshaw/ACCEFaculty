@@ -47,6 +47,54 @@
                   "resource": "virtualDomains.ACCEFacCommitteeEvals"
             },
             {
+                  "name": "getFacultyList",
+                  "type": "resource",
+                  "staticData": [],
+                  "resource": "virtualDomains.ACCEFacFacultyList"
+            },
+            {
+                  "name": "getEvalQuestionsAnswers",
+                  "type": "resource",
+                  "staticData": [],
+                  "resource": "virtualDomains.ACCEStuEvalQuestionsAnswers"
+            },
+            {
+                  "name": "viewForRBG",
+                  "type": "resource",
+                  "staticData": [
+                        {
+                              "description": "Your Classes",
+                              "value": "SELF",
+                              "inst_pidm": "SELF",
+                              "eval_type": "SELF",
+                              "viewFor": "SELF"
+                        },
+                        {
+                              "description": "OR Choose an Instructor",
+                              "value": "INSTRUCTOR",
+                              "inst_pidm": "INSTRUCTOR",
+                              "eval_type": "INSTRUCTOR",
+                              "viewFor": "INSTRUCTOR"
+                        }
+                  ]
+            },
+            {
+                  "name": "getTWGRINFO",
+                  "type": "resource",
+                  "staticData": [],
+                  "resource": "virtualDomains.TWGRINFO"
+            },
+            {
+                  "name": "selectRBG",
+                  "type": "resource",
+                  "staticData": [
+                        {
+                              "label": "select",
+                              "value": "X"
+                        }
+                  ]
+            },
+            {
                   "name": "overrideBlock",
                   "type": "block",
                   "label": "Override Instructor PIDM",
@@ -68,18 +116,7 @@
                                     "in_pidm": "$overridePidm"
                               },
                               "loadInitially": false,
-                              "onLoad": "var rows = $facAttributeData.$data.length;\nvar row = 1;\n\ninitGlobals();\n\nfor (row=0; row<rows; row++) {\n  console.log(\"Fac Attribute: \" +   $facAttributeData.$data[row].code + \" / \" + $facAttributeData.$data[row].description);\n  switch($facAttributeData.$data[row].code) {\n    case \"DECO\":\n        $globalFattIsDean = \"Y\";\n        $globalFattLimitTerm = \"%\";\n        break;\n    case \"SUMM\":\n        $globalFattIsDean = \"Y\";\n        $globalFattLimitTerm = \"%30\";\n        break;\n    case \"DECH\":\n        $globalFattIsChair = \"Y\";\n        $globalFattLimitTerm = \"%\";\n        break;\n    default:\n        $globalFattIsReview = \"Y\";\n  } // end switch\n}  // end for\n\nconsole.log(\"DECO, DECH, Review, Trm Lmt: \"\n  + $globalFattIsDean \n  + \", \" + $globalFattIsChair\n  + \", \" + $globalFattIsReview\n  + \", \" + $globalFattLimitTerm\n  )\n\nfunction initGlobals() {\n  $globalFattIsDean = \"N\";\n  $globalFattIsChair= \"N\";\n  $globalFattIsReview= \"N\";\n  $globalFattLimitTerm = \"\";\n}"
-                        },
-                        {
-                              "name": "facCanSeeData",
-                              "type": "data",
-                              "model": "getFacCanSee",
-                              "parameters": {
-                                    "in_pidm": "$overridePidm",
-                                    "abc": "a"
-                              },
-                              "loadInitially": false,
-                              "onLoad": "console.log(\"can see loaded\");"
+                              "onLoad": "console.log(\"facAttribute loaded: \" + $facAttributeData.$data.length);\n\nvar rows = $facAttributeData.$data.length;\nvar row = 1;\n\ninitGlobals();\n\nfor (row=0; row<rows; row++) {\n  //console.log(\"Fac Attribute: \" +   $facAttributeData.$data[row].code + \" / \" + $facAttributeData.$data[row].description);\n  switch($facAttributeData.$data[row].code) {\n    case \"DECO\":\n        $globalFattIsDean = \"Y\";\n        $globalFattLimitTerm = \"%\";\n        break;\n    case \"SUMM\":\n        $globalFattIsDean = \"Y\";\n        $globalFattLimitTerm = \"%30\";\n        break;\n    case \"DECH\":\n        $globalFattIsChair = \"Y\";\n        $globalFattLimitTerm = \"%\";\n        break;\n    default:\n        $globalFattIsReview = \"Y\";\n  } // end switch\n}  // end for\n\nevaluateAttributes();\n\nconsole.log(\"DECO, DECH, Review, Trm Lmt: \"\n  + $globalFattIsDean \n  + \", \" + $globalFattIsChair\n  + \", \" + $globalFattIsReview\n  + \", \" + $globalFattLimitTerm\n  )\n\nfunction initGlobals() {\n  $globalFattIsDean = \"N\";\n  $globalFattIsChair= \"N\";\n  $globalFattIsReview= \"N\";\n  $globalFattLimitTerm = \"\";\n}\n\nfunction evaluateAttributes() {\n  console.log(\"evaluating attributes...\");\n  if ($globalFattIsDean == \"Y\") {\n    $deansFacultyList.$load({clearCache:true});\n    $blockDeanEvals.$visible = true;\n  } else {\n    $reviewCommitteeTable.$load({clearCache:true});\n  }\n}"
                         },
                         {
                               "name": "headingBlockLeft",
@@ -137,7 +174,7 @@
                                           "type": "button",
                                           "label": "Load Evals",
                                           "style": "inlineBlock",
-                                          "onClick": "// set load message\n//$courseEvalsMessage = \"Loading Evals...\";\n\n// hide blocks while we see what should be visible\n$blockReviewCommittee.$visible = false;\n$blockCourseEvals.$visible = false;\n\n//load faculty attributes\n$facAttributeData.$load({clearCache:true});\n$reviewCommitteeTable.$load({clearCache:true});",
+                                          "onClick": "// set load message\n//$courseEvalsMessage = \"Loading Evals...\";\n\n// hide blocks while we see what should be visible\n$blockDeanEvals.$visible = false;\n$blockReviewCommittee.$visible = false;\n$blockCourseEvals.$visible = false;\n\n//load faculty attributes\n$facAttributeData.$load({clearCache:true});\n//$reviewCommitteeTable.$load({clearCache:true});",
                                           "valueStyle": "inlineBlock"
                                     }
                               ]
@@ -146,13 +183,92 @@
                   "style": ""
             },
             {
+                  "name": "blockDeanEvals",
+                  "type": "form",
+                  "nextButtonLabel": "Next",
+                  "showInitially": false,
+                  "components": [
+                        {
+                              "name": "deanEvalsMessage",
+                              "type": "textArea",
+                              "valueStyle": "textareaW100H4NoBorder",
+                              "model": "getTWGRINFO.TWGRINFO_TEXT",
+                              "parameters": {
+                                    "name": "\"zwlkacce.P_SelectPerson\"",
+                                    "label": "\"DEAN\""
+                              },
+                              "validation": {},
+                              "readonly": false,
+                              "required": false,
+                              "loadInitially": false,
+                              "value": ""
+                        },
+                        {
+                              "name": "eval_type",
+                              "type": "radio",
+                              "sourceModel": "viewForRBG",
+                              "labelKey": "description",
+                              "valueKey": "eval_type",
+                              "label": "Choose Evaluation Type",
+                              "style": "",
+                              "labelStyle": "",
+                              "valueStyle": "",
+                              "sourceParameters": {},
+                              "model": "eval_type",
+                              "required": true,
+                              "loadInitially": true,
+                              "value": "SELF",
+                              "onUpdate": ""
+                        },
+                        {
+                              "name": "deansFacultyList",
+                              "type": "select",
+                              "sourceModel": "getFacultyList",
+                              "labelKey": "FULL_NAME_DEPT",
+                              "valueKey": "INST_PIDM",
+                              "style": "",
+                              "labelStyle": "",
+                              "valueStyle": "",
+                              "sourceParameters": {
+                                    "in_limit_term": "$globalFattLimitTerm"
+                              },
+                              "required": false,
+                              "loadInitially": true,
+                              "onUpdate": ""
+                        },
+                        {
+                              "name": "deanEvalsContinue",
+                              "type": "button",
+                              "label": "Continue",
+                              "style": "inlineBlock",
+                              "valueStyle": "inlineBlock",
+                              "onClick": "console.log(\"Dean Radio Select: \" + $eval_type);\nvar okToContinue = setGlobalViewPidm();\nif (okToContinue) {\n  displayInstructorEvaluations();\n}\n\n\nfunction setGlobalViewPidm() {\n  var globalPidmSet = false;\n  if ($eval_type == \"SELF\") {\n    // Assign the selected instructor as the globalViewPidm\n    $globalViewPidm = $overridePidm;\n    globalPidmSet = true;\n    console.log(\"dean reviewing self evaluations\");\n  } else {\n    if ($deansFacultyList.$selected == null) {\n      alert(\"You must choose an instructor from the list\");\n    } else {\n      $globalViewPidm = $deansFacultyList.$selected.INST_PIDM;\n      globalPidmSet = true;\n    }\n  }\n  return globalPidmSet;\n}\n\n\nfunction displayInstructorEvaluations() {\n  // load the evals just for this instructor\n  $courseEvalsTable.$load({clearCache:true});\n\n  // Show the pending evals block\n  $courseEvalsMessage = \"Loading Evals...\";\n  $blockCourseEvals.$visible = true;\n\n  // Hide dean's selection block\n  $blockDeanEvals.$visible = false;\n}"
+                        }
+                  ]
+            },
+            {
                   "name": "blockReviewCommittee",
                   "type": "block",
                   "showInitially": false,
                   "components": [
                         {
+                              "name": "committeeEvalsMessage",
+                              "type": "textArea",
+                              "valueStyle": "textareaW100H4NoBorder",
+                              "model": "getTWGRINFO.TWGRINFO_TEXT",
+                              "parameters": {
+                                    "name": "\"zwlkacce.P_SelectPerson\"",
+                                    "label": "\"REVIEW\""
+                              },
+                              "validation": {},
+                              "readonly": false,
+                              "required": false,
+                              "loadInitially": false,
+                              "value": ""
+                        },
+                        {
                               "name": "reviewCommitteeTable",
-                              "type": "htable",
+                              "type": "grid",
                               "model": "getFacCommitteeEvals",
                               "parameters": {
                                     "in_pidm": "$overridePidm"
@@ -161,14 +277,14 @@
                               "allowModify": false,
                               "allowDelete": false,
                               "allowReload": false,
-                              "pageSize": 0,
+                              "pageSize": 20,
                               "loadInitially": false,
                               "components": [
                                     {
                                           "name": "reviewCommitteeInstructor",
                                           "type": "display",
                                           "label": "Instructor",
-                                          "model": "can_see_name",
+                                          "model": "CAN_SEE_NAME",
                                           "loadInitially": false,
                                           "asHtml": false
                                     },
@@ -176,29 +292,38 @@
                                           "name": "reviewCommitteeDepartment",
                                           "type": "display",
                                           "label": "Department",
-                                          "model": "can_see_department",
-                                          "loadInitially": true,
+                                          "model": "CAN_SEE_DEPARTMENT",
+                                          "loadInitially": false,
                                           "asHtml": false
                                     },
                                     {
                                           "name": "reviewCommitteeEvalsAvailable",
                                           "type": "display",
                                           "label": "Evaluations Available",
-                                          "model": "evals_available",
-                                          "loadInitially": true,
+                                          "model": "EVALS_AVAILABLE",
+                                          "loadInitially": false,
                                           "asHtml": false
                                     },
                                     {
                                           "name": "reviewCommitteeRelationship",
                                           "type": "display",
                                           "label": "Relationship",
-                                          "model": "can_see_desc",
-                                          "loadInitially": true,
+                                          "model": "CAN_SEE_DESC",
+                                          "loadInitially": false,
                                           "asHtml": false
+                                    },
+                                    {
+                                          "name": "reviewCommitteeTableRowSelect",
+                                          "type": "boolean",
+                                          "label": "Select",
+                                          "readonly": false,
+                                          "loadInitially": true,
+                                          "onUpdate": "// this action is being handled in the table on click event handler"
                                     }
                               ],
                               "label": "Review Committee",
-                              "onLoad": "console.log(\"Can see: \" + $reviewCommitteeTable.$data.length);\n\nif ($reviewCommitteeTable.$data.length >1) {\n  // Show the blockReviewCommittee\n  $blockReviewCommittee.$visible = true;\n} else {\n  // load the evals just for this instructor\n  $courseEvalsTable.$load({clearCache:true});\n  // Show the pending evals block\n  $courseEvalsMessage = \"Loading Evals...\";\n  $blockCourseEvals.$visible = true;\n}\n\n// Show the pending evals block\n//$blockCourseEvals.$visible = true;"
+                              "onLoad": "console.log(\"Can see: \" + $reviewCommitteeTable.$data.length);\n\n// if this was loaded, pidm is not for the dean\n\nif ($reviewCommitteeTable.$data.length == 0) {\n  // do nothing.  this happens on grids - it makes an extra, empty call\n} else if ($reviewCommitteeTable.$data.length >1) {\n  //Show the blockReviewCommittee\n  $blockReviewCommittee.$visible = true;\n} else {\n  // This user will only be viewing their own course evaluations\n  $globalViewPidm = $overridePidm;\n  // load the evals just for this instructor\n  $courseEvalsTable.$load({clearCache:true});\n  // Show the pending evals block\n  $courseEvalsMessage = \"Loading Evals...\";\n  $blockCourseEvals.$visible = true;\n}",
+                              "onClick": "// Assign the selected instructor as the globalViewPidm\n$globalViewPidm = $reviewCommitteeTable.$selected.CAN_SEE_PIDM;\nconsole.log(\"$globalViewPidm set: \" + $globalViewPidm);\n\n// load the evals just for this instructor\n$courseEvalsTable.$load({clearCache:true});\n\n// Show the pending evals block\n$courseEvalsMessage = \"Loading Evals...\";\n$blockCourseEvals.$visible = true;\n\n// Hide this block\n$blockReviewCommittee.$visible = false;"
                         }
                   ],
                   "label": ""
@@ -219,7 +344,7 @@
                                           "type": "grid",
                                           "model": "getACCEFacEvals",
                                           "parameters": {
-                                                "in_pidm": "$overridePidm"
+                                                "in_pidm": "$globalViewPidm"
                                           },
                                           "allowNew": false,
                                           "allowModify": false,
@@ -231,7 +356,7 @@
                                                 {
                                                       "name": "blockCourseEvalTermDescription",
                                                       "type": "display",
-                                                      "model": "term_description",
+                                                      "model": "TERM_DESC",
                                                       "loadInitially": true,
                                                       "asHtml": false
                                                 },
@@ -241,7 +366,7 @@
                                                       "loadInitially": true,
                                                       "asHtml": false,
                                                       "label": "CRN",
-                                                      "model": "crn"
+                                                      "model": "CRN"
                                                 },
                                                 {
                                                       "name": "blockCourseEvalCourse",
@@ -249,7 +374,7 @@
                                                       "loadInitially": true,
                                                       "asHtml": false,
                                                       "label": "Course",
-                                                      "model": "course_id"
+                                                      "model": "COURSE_ID"
                                                 },
                                                 {
                                                       "name": "blockCourseEvalTitle",
@@ -257,7 +382,7 @@
                                                       "loadInitially": true,
                                                       "asHtml": false,
                                                       "label": "Title",
-                                                      "model": "course_title"
+                                                      "model": "COURSE_TITLE"
                                                 },
                                                 {
                                                       "name": "blockCourseEvalBlock",
@@ -265,13 +390,13 @@
                                                       "loadInitially": true,
                                                       "asHtml": false,
                                                       "label": "Block",
-                                                      "model": "block"
+                                                      "model": "BLOCK"
                                                 },
                                                 {
                                                       "name": "blockCourseEvalUnits",
                                                       "type": "display",
                                                       "label": "Units",
-                                                      "model": "units",
+                                                      "model": "UNITS",
                                                       "loadInitially": true,
                                                       "asHtml": false
                                                 },
@@ -279,7 +404,7 @@
                                                       "name": "blockCourseEvalInstructorName",
                                                       "type": "display",
                                                       "label": "Instructor",
-                                                      "model": "instructor_name",
+                                                      "model": "INSTRUCTOR_NAME",
                                                       "loadInitially": true,
                                                       "asHtml": false
                                                 },
@@ -287,7 +412,7 @@
                                                       "name": "blockCourseEvalLimit",
                                                       "type": "display",
                                                       "label": "Limit",
-                                                      "model": "course_limit",
+                                                      "model": "COURSE_LIMIT",
                                                       "loadInitially": true,
                                                       "asHtml": false
                                                 },
@@ -295,7 +420,7 @@
                                                       "name": "blockCourseEval",
                                                       "type": "display",
                                                       "label": "Class Size",
-                                                      "model": "course_size",
+                                                      "model": "COURSE_SIZE",
                                                       "loadInitially": true,
                                                       "asHtml": false
                                                 },
@@ -303,11 +428,12 @@
                                                       "name": "result",
                                                       "type": "link",
                                                       "label": "result",
+                                                      "valueStyle": "",
                                                       "replaceView": true
                                                 }
                                           ],
-                                          "label": "Course Evaluations $courseEvalsMessage",
-                                          "onLoad": "// Set message\n$courseEvalsMessage = \"Loaded\";\n\nvar rows = $courseEvalsTable.$data.length;\nvar row = 1;\nvar resultOkToView = false;\nvar resultOkToSetup = false;\nvar resultUpdateToViewable = false;\nvar resultMessage;\n\nfor (row=0; row<rows; row++) {\n    console.log(\"Course: \" + $courseEvalsTable.$data[row].crn);\n    initResponse();\n    evaluateCourse();\n    setResultMessage();\n\n    console.log(resultMessage);\n    $courseEvalsTable.$data[row].result = resultMessage;\n\n}\n\n\nfunction initResponse() {\n    resultOkToView = false;\n    resultOkToSetup = false;\n    resultUpdateToViewable = false;\n    resultMessage =\"\";\n}\n\n\nfunction evaluateCourse() {\n    if ($courseEvalsTable.$data[row].eval_cntl_viewable == \"Y\") {\n\n        // from now on we can view without futher conditions\n        console.log(\"ok to view\");\n        resultOkToView = true;\n\n    } else if ($courseEvalsTable.$data[row].start_date > $courseEvalsTable.$data[row].acce_date) {\n        \n        // hasn't even started yet, so set up is fine\n        resultOkToSetup = true;\n\n    } else {\n\n        if (    $courseEvalsTable.$data[row].x_evals_in == 0 \n             && $courseEvalsTable.$data[row].acce_date <= $courseEvalsTable.$data[row].x_faculty_deadline \n             && $courseEvalsTable.$data[row].x_finalized == \"N\" ) {\n        \n            // No evaluations in, ACCE date < faculty deadline\n            resultOkToSetup = true;\n        } \n\n        if (    $courseEvalsTable.$data[row].x_grades_in == $courseEvalsTable.$data[row].x_size\n             && $courseEvalsTable.$data[row].x_evals_in > 0 \n             && ($courseEvalsTable.$data[row].x_evals_in == $courseEvalsTable.$data[row].x_size || $courseEvalsTable.$data[row].acce_date > courseEvalsTable.$data[row].x_student_deadline) ) {\n\n            // all grades are in AND some evals are in AND (all evals are in or ACCE date is after student deadline)\n            // this means \"update it\" in szrectl to Viewable\n            resultUpdateToViewable = true;\n            resultOkToView = true;\n        } \n\n    }\n}\n\n\nfunction setResultMessage() {\n    if (resultOkToView == true) {\n        console.log(\"setting ok to view\");\n        resultMessage = \"View\";\n    } else if (resultOkToSetup) {\n        resultMessage = \"Setup\";\n    } else {\n        if ($courseEvalsTable.$data[row].x_grades_in < $courseEvalsTable.$data[row].x_size) {\n            resultMessage =  \"GRADES_OUT\";\n        } else if ($courseEvalsTable.$data[row].acce_date <= $courseEvalsTable.$data[row].x_student_deadline) {\n            resultMessage = \"STU_DEADLINE\";\n        } else if ($courseEvalsTable.$data[row].x_evals_in == 0) {\n            resultMessage = \"(no evals in)\";\n        } \n    }\n}",
+                                          "label": "Course Evaluations: $courseEvalsMessage",
+                                          "onLoad": "// Set message\n$courseEvalsMessage = \"Loaded\";\n\nvar rows = $courseEvalsTable.$data.length;\nvar row = 1;\nvar resultOkToView = false;\nvar resultOkToSetup = false;\nvar resultUpdateToViewable = false;\nvar resultMessage;\n\nif (rows <=0) {\n    $courseEvalsMessage = \"No Courses Found.\";\n} else {\n    for (row=0; row<rows; row++) {\n        //console.log(\"Course: \" + $courseEvalsTable.$data[row].crn);\n        initResponse();\n        evaluateCourse();\n        setResultMessage();\n\n        //console.log(resultMessage);\n        $courseEvalsTable.$data[row].result = resultMessage;\n\n    }\n}\n\n\nfunction initResponse() {\n    resultOkToView = false;\n    resultOkToSetup = false;\n    resultUpdateToViewable = false;\n    resultMessage =\"\";\n}\n\n\nfunction evaluateCourse() {\n    if ($courseEvalsTable.$data[row].EVAL_CNTL_VIEWABLE == \"Y\") {\n\n        // from now on we can view without futher conditions\n        resultOkToView = true;\n\n    } else if ($courseEvalsTable.$data[row].START_DATE > $courseEvalsTable.$data[row].ACCE_DATE) {\n        \n        // hasn't even started yet, so set up is fine\n        resultOkToSetup = true;\n\n    } else {\n\n        if (    $courseEvalsTable.$data[row].X_EVALS_IN == 0 \n             && $courseEvalsTable.$data[row].ACCE_DATE <= $courseEvalsTable.$data[row].X_FACULTY_DEADLINE\n             && $courseEvalsTable.$data[row].X_FINALIZED == \"N\" ) {\n        \n            // No evaluations in, ACCE date < faculty deadline\n            resultOkToSetup = true;\n        } \n\n        if (    $courseEvalsTable.$data[row].X_GRADES_IN == $courseEvalsTable.$data[row].X_SIZE\n             && $courseEvalsTable.$data[row].X_EVALS_IN > 0 \n             && ($courseEvalsTable.$data[row].X_EVALS_IN == $courseEvalsTable.$data[row].X_SIZE || $courseEvalsTable.$data[row].ACCE_DATE > $courseEvalsTable.$data[row].X_STUDENT_DEADLINE) ) {\n\n            // all grades are in AND some evals are in AND (all evals are in or ACCE date is after student deadline)\n            // this means \"update it\" in szrectl to Viewable\n            resultUpdateToViewable = true;\n            resultOkToView = true;\n        } \n\n    }\n}\n\n\nfunction setResultMessage() {\n    if (resultOkToView == true) {\n        resultMessage = \"View\";\n    } else if (resultOkToSetup) {\n        resultMessage = \"Setup\";\n    } else {\n        if ($courseEvalsTable.$data[row].x_grades_in < $courseEvalsTable.$data[row].X_SIZE) {\n            resultMessage =  \"GRADES_OUT\";\n        } else if ($courseEvalsTable.$data[row].acce_date <= $courseEvalsTable.$data[row].X_STUDENT_DEADLINE) {\n            resultMessage = \"STU_DEADLINE\";\n        } else if ($courseEvalsTable.$data[row].X_EVALS_IN == 0) {\n            resultMessage = \"(no evals in)\";\n        } \n    }\n}",
                                           "onSave": "",
                                           "onClick": "console.log(\"Row selected: \" + $courseEvalsTable.$selected);"
                                     }
@@ -319,15 +445,82 @@
                               "showInitially": true,
                               "components": [
                                     {
-                                          "name": "orderReportButton",
+                                          "name": "courseEvalsOrderReportButton",
                                           "type": "button",
                                           "label": "Order Report",
+                                          "onClick": "//"
+                                    },
+                                    {
+                                          "name": "courseEvalsExitButton",
+                                          "type": "button",
+                                          "label": "Exit",
                                           "onClick": "//"
                                     }
                               ]
                         }
                   ],
                   "type": "block"
+            },
+            {
+                  "name": "blockCourseEvalsResponseStudent",
+                  "type": "block",
+                  "label": "Course Evaluation Responses by Student",
+                  "showInitially": false,
+                  "components": [
+                        {
+                              "name": "blockCourseEvalsResponseStudentLeft",
+                              "type": "block",
+                              "showInitially": true,
+                              "components": [
+                                    {
+                                          "name": "blockCourseEvalsResponseStudentDescription",
+                                          "type": "display",
+                                          "label": "This evaluation is for:",
+                                          "loadInitially": true,
+                                          "asHtml": false,
+                                          "value": "Block $courseEvalsTable.$selected.BLOCK\n, $courseEvalsTable.$selected.COURSE_ID\n ($courseEvalsTable.$selected.CRN) \n $courseEvalsTable.$selected.COURSE_TITLE",
+                                          "style": "inlineBlock",
+                                          "labelStyle": "inlineBlock",
+                                          "valueStyle": "inlineBlock"
+                                    },
+                                    {
+                                          "name": "blockCourseEvalsResponseStudentDescription2",
+                                          "type": "display",
+                                          "style": "inlineBlock",
+                                          "labelStyle": "inlineBlock",
+                                          "valueStyle": "inlineBlock",
+                                          "loadInitially": true,
+                                          "asHtml": false,
+                                          "value": "$courseEvalsTable.$selected.INSTRUCTOR_NAME"
+                                    }
+                              ]
+                        },
+                        {
+                              "name": "blockCourseEvalsResponseStudentRight",
+                              "type": "block",
+                              "showInitially": true,
+                              "components": [
+                                    {
+                                          "name": "blockCourseEvalsResponseStudentNextButton",
+                                          "type": "button",
+                                          "label": "Next",
+                                          "onClick": "//"
+                                    },
+                                    {
+                                          "name": "blockCourseEvalsResponseStudentExitButton",
+                                          "type": "button",
+                                          "label": "Exit",
+                                          "onClick": "//"
+                                    },
+                                    {
+                                          "name": "blockCourseEvalsResponseStudentQuestionButton",
+                                          "type": "button",
+                                          "label": "Display by Question",
+                                          "onClick": "//"
+                                    }
+                              ]
+                        }
+                  ]
             }
       ],
       "importCSS": "ACCE_FACULTY_CSS",
