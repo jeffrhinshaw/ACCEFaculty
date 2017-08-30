@@ -1,0 +1,16 @@
+users:
+------
+03042097 / 1060439 Instructor              Anthony Bull
+03000378 / 1003384 Department DECH         Miro Kummel
+02000245 / 115220             DECO         Sandra Wong
+815934   / 115478             SUMM(dean)   Ann VanHorn
+902232   / 118532             16TM(tm mbr) Lori Driscoll
+
+// set eval load message
+$courseEvalsMessage = "Loading Evals...";
+
+// faculty attr
+$globalFattIsChair   // Y
+$globalFattIsDean    // Y
+$globalFattLimitTerm // % or %30
+$globalFattIsReview     // Y

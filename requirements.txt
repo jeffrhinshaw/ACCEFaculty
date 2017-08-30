@@ -1,0 +1,55 @@
+name         id       pidm      Attributes
+-----------  -------- -------   ------------
+Miro Kummel  03000378 1003384 - DECH - Dept. Chair
+Anthony Bull 03042097 1060439 - n/a 
+Sandi Wong   02000245 115220  - DECO - Dean
+
+
+ACCE Faculty
+
+$globalFattIsDean = "Y";
+$globalFattLimitTerm = "%";
+$globalFattIsChair = "Y";
+$globalFattIsReview = "Y";
+$globalView
+$globalViewPidm
+
+Flow:
+Pidm is entered
+	facAttributeData.$load
+	$reviewCommitteeTable.$load
+
+facAttributes
+	(is Dean, Dept Chair, other)
+	if Dean, show deansFacultyList
+	else reviewCommitteeTable.$load
+
+reviewCommitteeTable
+	if >1 row show blockReviewCommittee
+	else courseEvalsTable.$load	
+		 $globalViewPidm = user
+
+deansFacultyList
+
+
+
+
+courseEvalsTable	
+	$courseEvalsMessage
+
+
+
+***************
+* need to do: *
+***************
+  when dean, seems should not be able to see "setup" when looking at an instructors courses
+    * same when DECG
+
+
+**********************
+* concerns / issues. *
+**********************
+twgrinfo read for: name=zwlkacce.P_SelectPerson to get dean, review, dept chair message
+
+
+
