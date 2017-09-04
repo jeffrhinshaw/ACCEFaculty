@@ -1,0 +1,39 @@
+console.log("Dean Radio Select: " + $eval_type);
+var okToContinue = setGlobalViewPidm();
+if (okToContinue) {
+  displayInstructorEvaluations();
+}
+
+
+function setGlobalViewPidm() {
+  var globalPidmSet = false;
+  if ($eval_type == "SELF") {
+    // Assign the selected instructor as the globalViewPidm
+    $globalViewPidm = $overridePidm;
+    globalPidmSet = true;
+    $globalYouAreViewing = "SELF";
+    console.log("dean reviewing self evaluations");
+  } else {
+    if ($deansFacultyList.$selected == null) {
+      alert("You must choose an instructor from the list");
+    } else {
+      $globalViewPidm = $deansFacultyList.$selected.INST_PIDM;
+      $globalYouAreViewing = "OTHER";
+      globalPidmSet = true;
+    }
+  }
+  return globalPidmSet;
+}
+
+
+function displayInstructorEvaluations() {
+  // load the evals just for this instructor
+  $courseEvalsTable.$load({clearCache:true});
+
+  // Show the pending evals block
+  $courseEvalsMessage = "Loading Evals...";
+  $blockCourseEvals.$visible = true;
+
+  // Hide dean's selection block
+  $blockDeanEvals.$visible = false;
+}

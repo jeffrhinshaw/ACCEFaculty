@@ -3,6 +3,8 @@ name         id       pidm      Attributes
 Miro Kummel  03000378 1003384 - DECH - Dept. Chair
 Anthony Bull 03042097 1060439 - n/a 
 Sandi Wong   02000245 115220  - DECO - Dean
+Gypsy Ames   02004332 118900
+Phil Kannan	 02002520 117032
 
 
 ACCE Faculty
@@ -13,6 +15,9 @@ $globalFattIsChair = "Y";
 $globalFattIsReview = "Y";
 $globalView
 $globalViewPidm
+
+$globalYouAre = "SELF", "DEAN", "DECH", "REVIEW"
+$globalYouAreViewing "SELF". "OTHER"
 
 Flow:
 Pidm is entered
@@ -38,6 +43,36 @@ courseEvalsTable
 	$courseEvalsMessage
 
 
+***************************************
+* Legacy Code ZWLKACCE.P_SelectPerson *
+***************************************
+gv_term := twbkwbis.f_getparam (global_pidm, 'TERM');
+IF gv_term IS NULL
+ 	twbkwbis.p_setparam (global_pidm, 'TERM', gv_term); // smbdflt_dflt_code = 'WEB'
+IF gv_stufac <> 'FAC'
+	'You must be a valid faculty member for %01% to access this page.',
+Read SIRATTR.  See if DECO, SUMM, DECH, REVIEW
+Read "CanSee" / szrevac. What other instructors can i see
+If not Dean, and CanSee.count = 0 there is no special visibility for this user
+  if DEAN // twbkwbis.p_dispinfo ('zwlkacce.P_SelectPerson', 'DEAN');
+  if REVIES // ('zwlkacce.P_SelectPerson', 'REVIEW');
+  if DEANCHAIR // ('zwlkacce.P_SelectPerson', 'DEPTCHAIR');
+
+set the parameter as themself, or the person they opted to be
+	-- twbkwbis.p_setparam (global_pidm, 'AS', global_pidm);
+	-- twbkwbis.p_setparam (global_pidm, 'AS', x_pidm);
+
+read courses, set message (F_ACCESSIBLE)
+	V = Viewable if
+		1) SZRECTL.szrectl_view == Y
+	S = Setup
+		SIRASGN.p_pidm <> NULL and SIRASGN.start_date > f_acce_date
+		AND viewing own course -- AND (gv_as_pidm IS NULL OR gv_as_pidm = global_pidm)
+	GRADES_OUT = grades not posted
+	STU_DEADLINE = still available
+	NO_EVALS = no evals in
+
+
 
 ***************
 * need to do: *
@@ -49,7 +84,7 @@ courseEvalsTable
 **********************
 * concerns / issues. *
 **********************
-twgrinfo read for: name=zwlkacce.P_SelectPerson to get dean, review, dept chair message
-
+- twgrinfo read for: name=zwlkacce.P_SelectPerson to get dean, review, dept chair message
+- REVIEW SEEMS TO HAVE PRIORITY OVER DEPTCHAIR
 
 

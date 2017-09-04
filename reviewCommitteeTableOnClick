@@ -1,0 +1,24 @@
+// Assign the selected instructor as the globalViewPidm
+$globalViewPidm = $reviewCommitteeTable.$selected.CAN_SEE_PIDM;
+console.log("$globalViewPidm set: " + $globalViewPidm);
+
+
+// load the evals just for this instructor
+$courseEvalsTable.$load({clearCache:true});
+
+// Show the pending evals block
+$courseEvalsMessage = "Loading Evals...";
+$blockCourseEvals.$visible = true;
+
+// Hide this block
+$blockReviewCommittee.$visible = false;
+
+// Unselect the checked row so everything is primed for our return
+$reviewCommitteeTable.$selected.reviewCommitteeTableRowSelect = false;
+
+//
+if ($reviewCommitteeTable.$selected.ROW_NUMBER ==1) {
+	$globalYouAreViewing = "SELF";
+} else {
+	$globalYouAreViewing = "OTHER";
+}

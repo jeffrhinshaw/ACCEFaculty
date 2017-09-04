@@ -1,0 +1,26 @@
+console.log("Can see: " + $reviewCommitteeTable.$data.length);
+
+// if this was loaded, pidm is not for the dean
+
+if ($reviewCommitteeTable.$data.length == 0) {
+  // do nothing.  this happens on grids - it makes an extra, empty call
+} else if ($reviewCommitteeTable.$data.length >1) {
+  //Show the blockReviewCommittee
+  $blockReviewCommittee.$visible = true;
+  if ($globalFattIsReview == "Y") {
+    $globalYouAre = "REVIEW";
+  } else {
+    $globalYouAre = "DECH";
+  }
+  $globalYouAreViewing = "OTHER";
+} else {
+  // This user will only be viewing their own course evaluations
+  $globalYouAre = "SELF";
+  $globalYouAreViewing = "SELF";
+  $globalViewPidm = $overridePidm;
+  // load the evals just for this instructor
+  $courseEvalsTable.$load({clearCache:true});
+  // Show the pending evals block
+  $courseEvalsMessage = "Loading Evals...";
+  $blockCourseEvals.$visible = true;
+}

@@ -36,13 +36,12 @@ function evaluateCourse() {
     if ($courseEvalsTable.$data[row].EVAL_CNTL_VIEWABLE == "Y") {
 
         // from now on we can view without futher conditions
+        console.log("OK to view1");
         resultOkToView = true;
 
     } else if ($courseEvalsTable.$data[row].START_DATE > $courseEvalsTable.$data[row].ACCE_DATE) {
-        
-        // hasn't even started yet, so set up is fine
+        console.log("OK to setup1");
         resultOkToSetup = true;
-
     } else {
 
         if (    $courseEvalsTable.$data[row].X_EVALS_IN == 0 
@@ -50,6 +49,7 @@ function evaluateCourse() {
              && $courseEvalsTable.$data[row].X_FINALIZED == "N" ) {
         
             // No evaluations in, ACCE date < faculty deadline
+            console.log("OK to setup2");
             resultOkToSetup = true;
         } 
 
@@ -59,6 +59,7 @@ function evaluateCourse() {
 
             // all grades are in AND some evals are in AND (all evals are in or ACCE date is after student deadline)
             // this means "update it" in szrectl to Viewable
+            console.log("OK to view2");
             resultUpdateToViewable = true;
             resultOkToView = true;
         } 
@@ -68,15 +69,23 @@ function evaluateCourse() {
 
 
 function setResultMessage() {
+    console.log("message: " + $courseEvalsTable.$data[row].CRN + ", X_GRADES_IN: " + $courseEvalsTable.$data[row].X_GRADES_IN
+        + ", x_size: " + $courseEvalsTable.$data[row].X_SIZE + ". viewing: " + $globalYouAreViewing
+        + ", evals_in: " + $courseEvalsTable.$data[row].X_EVALS_IN + ", acce_date: " + $courseEvalsTable.$data[row].ACCE_DATE
+        + ", faculty_deadline: " +  $courseEvalsTable.$data[row].X_FACULTY_DEADLINE + ", x_finalized: " + $courseEvalsTable.$data[row].X_FINALIZED
+        + ", start_date: " + $courseEvalsTable.$data[row].START_DATE 
+        + ", $globalYouAreViewing: " + $globalYouAreViewing);
     if (resultOkToView == true) {
         resultMessage = "View";
     } else if (resultOkToSetup) {
-        resultMessage = "Setup";
+        if ($globalYouAreViewing == "SELF") {
+            resultMessage = "Setup";
+        }
     } else {
-        if ($courseEvalsTable.$data[row].x_grades_in < $courseEvalsTable.$data[row].X_SIZE) {
-            resultMessage =  "GRADES_OUT";
-        } else if ($courseEvalsTable.$data[row].acce_date <= $courseEvalsTable.$data[row].X_STUDENT_DEADLINE) {
-            resultMessage = "STU_DEADLINE";
+        if ($courseEvalsTable.$data[row].X_GRADES_IN < $courseEvalsTable.$data[row].X_SIZE) {
+            resultMessage =  "grades not posted";
+        } else if ($courseEvalsTable.$data[row].ACCE_DATE <= $courseEvalsTable.$data[row].X_STUDENT_DEADLINE) {
+            resultMessage = "still available";
         } else if ($courseEvalsTable.$data[row].X_EVALS_IN == 0) {
             resultMessage = "(no evals in)";
         } 

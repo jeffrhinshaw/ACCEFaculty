@@ -1,4 +1,4 @@
-SELECT :in_pidm               
+SELECT :in_pidm                    "INST_PIDM"
      , crse.term_code_key
      , crse.term_desc              
      , crse.crn_key                "CRN"
@@ -34,7 +34,7 @@ SELECT :in_pidm
      , stup.student_deadline "X_STUDENT_DEADLINE"
      , stup.faculty_deadline "X_FACULTY_DEADLINE"
      , case when szrectl_term_code is not null then 'Y'
-            else ''
+            else 'N'
        end as "X_FINALIZED"
      , szrectl_view          "EVAL_CNTL_VIEWABLE"
 FROM (SELECT sirasgn_term_code term
